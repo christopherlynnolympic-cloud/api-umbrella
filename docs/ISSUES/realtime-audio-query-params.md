@@ -1,0 +1,63 @@
+# Add realtime audio-request query-parameter schema for streaming transcription
+
+I validated and converted the provided JSON schema for realtime audio request query parameters. Required fields: `sample_rate` and `encoding`. The schema documents parameters used for end-of-turn behavior, keyterm boosting, MIP opt-out, and tagging.
+
+Suggested labels: `docs`, `enhancement`
+
+Schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "encoding": {
+      "type": "string",
+      "description": "Encoding of the audio stream. Currently only supports raw signed little-endian 16-bit PCM.",
+      "enum": [
+        "linear16"
+      ]
+    },
+    "sample_rate": {
+      "type": "string",
+      "description": "Sample rate of the audio stream in Hz.",
+      "pattern": "^[0-9]+$"
+    },
+    "eager_eot_threshold": {
+      "type": "string",
+      "description": "End-of-turn confidence required to fire an eager end-of-turn event. When set, enables EagerEndOfTurn and TurnResumed events. Valid Values 0.3 - 0.9."
+    },
+    "eot_threshold": {
+      "type": "string",
+      "description": "End-of-turn confidence required to finish a turn. Valid Values 0.5 - 0.9.",
+      "default": "0.7"
+    },
+    "eot_timeout_ms": {
+      "type": "string",
+      "description": "A turn will be finished when this much time has passed after speech, regardless of EOT confidence.",
+      "default": "5000",
+      "pattern": "^[0-9]+$"
+    },
+    "keyterm": {
+      "type": "string",
+      "description": "Keyterm prompting can improve recognition of specialized terminology. Pass multiple keyterm query parameters to boost multiple keyterms."
+    },
+    "mip_opt_out": {
+      "type": "string",
+      "description": "Opts out requests from the Deepgram Model Improvement Program. Refer to Deepgram Docs for pricing impacts before setting this to true. https://dpgr.am/deepgram-mip",
+      "enum": [
+        "true",
+        "false"
+      ],
+      "default": "false"
+    },
+    "tag": {
+      "type": "string",
+      "description": "Label your requests for the purpose of identification during usage reporting"
+    }
+  },
+  "required": [
+    "sample_rate",
+    "encoding"
+  ]
+}
+```
